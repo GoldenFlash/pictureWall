@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		.content{
+			/*position: relative;*/
+			width:100%;
+		}
+		.content li{
+			margin:10px;
+			list-style: none;
+			position:absolute;
+		}
+	</style>
+</head>
+<body>
+	<div class="content">
+		<ul>
+			<li><img src="https://picsum.photos/200/300?image=19" alt=""></li>
+			<li><img src="https://picsum.photos/200/300?image=20" alt=""></li>
+			<li><img src="https://picsum.photos/200/400?image=21" alt=""></li>
+			<li><img src="https://picsum.photos/200/100?image=22" alt=""></li>
+			<li><img src="https://picsum.photos/200/200?image=23" alt=""></li>
+			<li><img src="https://picsum.photos/200/400?image=24" alt=""></li>
+			<li><img src="https://picsum.photos/200/360?image=25" alt=""></li>
+			<li><img src="https://picsum.photos/200/240?image=26" alt=""></li>
+			<li><img src="https://picsum.photos/200/400?image=27" alt=""></li>
+			<li><img src="https://picsum.photos/200/250?image=28" alt=""></li>
+			<li><img src="https://picsum.photos/200/350?image=29" alt=""></li>
+			<li><img src="https://picsum.photos/200/250?image=10" alt=""></li>
+			<li><img src="https://picsum.photos/200/400?image=11" alt=""></li>
+			<li><img src="https://picsum.photos/200/200?image=12" alt=""></li>
+			<li><img src="https://picsum.photos/200/200?image=13" alt=""></li>
+			<li><img src="https://picsum.photos/200/200?image=14" alt=""></li>
+			<li><img src="https://picsum.photos/200/200?image=15" alt=""></li>
+			<li><img src="https://picsum.photos/200/200?image=16" alt=""></li>
+			<li><img src="https://picsum.photos/200/200?image=17" alt=""></li>
+			<li><img src="https://picsum.photos/200/200?image=18" alt=""></li>
+		</ul>
+	</div>
+	<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script>
+		;(function(){
+			var PictureWall = function(el){
+			_this = this;
+			this.list = el.find('li');
+			this.heightArr = [];
+			this.contentW = el.width();
+			this.imgLength = parseInt(this.contentW/200);
+			this.getImglength();
+			this.render();
+		
+		}
+
+		PictureWall.prototype = {
+			lasyLoad:function(){
+
+			},
+			getImglength: function(){
+				for(var i=0;i<_this.imgLength;i++){
+					_this.heightArr[i]=0
+				}
+			},
+			render: function(){
+				
+				_this.list.each(function(){
+					var minHeight = Math.min.apply(null,_this.heightArr);
+					var index = _this.heightArr.indexOf(minHeight);
+					var imgHeight = $(this).height();
+					var imgWidth = $(this).outerWidth(true);
+					$(this).css({
+						'top':minHeight,
+						'left':index*imgWidth
+					})
+					_this.heightArr[index] +=imgHeight
+				})
+
+			}
+		}
+		PictureWall.init=function(item){
+			new PictureWall(item)
+		}
+
+		window.PictureWall = PictureWall
+		})()
+
+		window.PictureWall.init($('.content'))
+	</script>
+</body>
+</html>
