@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+		<style type="text/css">
+		.content{
+			/*position: relative;*/
+			width:100%;
+			/*height:1000px;*/
+
+		}
+		.content ul{
+			position:relative;
+		}
+		.content li{
+			margin:10px;
+			list-style: none;
+			position:absolute;
+		}
+		.content li img{
+			width:300px;
+		}
+	</style>
+</head>
+<body>
+	<div class="content">
+		<ul>
+			
+		</ul>
+	</div>
+	<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+		var index = 1;
+		var flag = true;
+
+		function getData(){
+			var page = index||1;
+
+			flag = false;
+			var script = document.createElement('script');
+			var cont = document.querySelector('.content');
+			script.setAttribute('src',' http://platform.sina.com.cn/slide/album_tech?jsoncallback=func&app_key=1271687855&num=13&page='+page)
+			cont.appendChild(script);
+			cont.removeChild(script);
+
+		}
+		var func = function(data){
+			var res = data.data
+			var li='';
+			$.each(res,function(item){
+				
+				var url = this.img_url;
+				li ='<li><img src='+ this.img_url+'></li>';
+				var node = $(li)
+				$('.content ul').append(node)
+			})
+			// render($('.content'))
+			$('img').on('load',function(){
+				render($('.content'))
+			})
+			console.log(flag)
+			index++
+			flag = true
+			console.log(flag)
+		}
+		// getData()
+	
+
+		function render(el){
+			
+			list = el.find('li');
+			heightArr = [];
+			contentW = el.width();
+			imgLength = parseInt(contentW/300);
+			$('.content ul').css({
+				'width':300*imgLength,
+				'margin': '0 auto'
+			})
+
+			for(var i=0;i<imgLength;i++){
+					heightArr[i]=0
+				}
+			list.each(function(){
+				var minHeight = Math.min.apply(null,heightArr);
+				var index = heightArr.indexOf(minHeight);
+				var imgHeight = $(this).height();
+				var imgWidth = $(this).outerWidth(true);
+				$(this).css({
+					'top':minHeight,
+					'left':index*imgWidth
+				})
+				heightArr[index] +=imgHeight
+
+				
+			})
+			var maxHeight = Math.max.apply(null,heightArr)
+			$('.content ul').css('height',maxHeight)
+		}
+		function check(){
+			var windowHeight = $(window).height();
+			var scrollTop = $(window).scrollTop();
+			var pageHeight = $('.content').height();
+			if(windowHeight+scrollTop >= pageHeight){
+				return true;
+			}else{
+				return false;
+			}
+		};
+		
+		function init(){
+			getData()
+		
+		}
+		
+		init();
+		$(window).on('scroll',function(){
+			if(check()){
+
+				if(flag){
+					getData()
+					
+				}
+				
+			}
+			
+		})
+		$(window).on('resize',function(){
+			render($('.content'))
+		})
+	</script>
+</body>
+</html>
